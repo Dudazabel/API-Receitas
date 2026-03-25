@@ -64,6 +64,7 @@ fun AuthenticationSignIn(modifier: Modifier = Modifier){
                 var nome by remember { mutableStateOf("") }
                 var email by remember { mutableStateOf("") }
                 var senha by remember { mutableStateOf("") }
+                var Confirmarsenha by remember { mutableStateOf("") }
 
                 OutlinedTextField(
                     value = nome,
@@ -91,8 +92,8 @@ fun AuthenticationSignIn(modifier: Modifier = Modifier){
                 Spacer(modifier = Modifier.height(20.dp))
 
                 OutlinedTextField(
-                    value = senha,
-                    onValueChange = {senha = it},
+                    value = Confirmarsenha,
+                    onValueChange = {Confirmarsenha = it},
                     label = { Text("Confirme a sua senha: ")
                     }
                 )
