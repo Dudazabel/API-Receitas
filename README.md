@@ -58,8 +58,8 @@ O principal objetivo do app é aplicar conceitos de desenvolvimento mobile com *
 <p>
   <img alt="Kotlin" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg" width="40" />
   <img alt="Android" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/android/android-original.svg" width="40" />
-  <img alt="Jetpack Compose" src="https://developer.android.com/images/jetpack/compose-tutorial/compose-logo.png" width="40" />
-  <img alt="Retrofit" src="https://raw.githubusercontent.com/square/retrofit/master/website/static/logo.png" width="40" />
+  <img alt="Jetpack Compose" src="https://developer.android.com/images/jetpack/compose-tutorial/compose-logo.png" width="40" height="40" />
+<img alt="Retrofit" src="https://raw.githubusercontent.com/square/retrofit/master/website/static/logo.png" width="40" height="40" />
 </p>
 
 ---
