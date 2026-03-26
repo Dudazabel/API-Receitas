@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             APIReceitasTheme {
                 Surface(modifier = Modifier.fillMaxWidth()) {
-                    RecipeDetailScreen()
+                    HomeScreen()
                 }
             }
         }
