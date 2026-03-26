@@ -55,7 +55,9 @@ fun CreateRecipe(
     var nomeReceita by remember { mutableStateOf("") }
     var descricaoReceita by remember { mutableStateOf("") }
     var tempoPreparoString by remember { mutableStateOf("") }
+    var porcoesString by remember { mutableStateOf("") }
     var tempoPreparo by remember { mutableStateOf(0.0) }
+    var porcoes by remember { mutableStateOf(0.0) }
     var nomeIngredientes by remember { mutableStateOf("") }
     var quantidade by remember { mutableStateOf("") }
     val ingredientes = remember { mutableStateListOf<Ingredientes>() }
@@ -112,12 +114,25 @@ fun CreateRecipe(
         item {
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text(text = "Tempo de preparo",
+            Text(text = "Tempo de preparo (min)",
                 fontSize = 17.sp)
             OutlinedTextField(
                 value = tempoPreparoString,
                 onValueChange = {tempoPreparoString = it
                     tempoPreparo = it.toDoubleOrNull() ?: 0.0},
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(text = "Porções",
+                fontSize = 17.sp)
+            OutlinedTextField(
+                value = porcoesString,
+                onValueChange = {porcoesString = it
+                    porcoes = it.toDoubleOrNull() ?: 0.0},
                 modifier = Modifier.fillMaxWidth()
             )
         }
