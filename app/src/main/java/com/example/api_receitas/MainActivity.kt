@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.api_receitas.features.authentication.ui.AuthenticationLogIn
 import com.example.api_receitas.features.authentication.ui.AuthenticationSignIn
+import com.example.api_receitas.features.confirmation.ui.telaConfimacao
 import com.example.api_receitas.features.details.ui.RecipeDetailScreen
 import com.example.api_receitas.features.home.ui.HomeScreen
 import com.example.api_receitas.ui.theme.APIReceitasTheme
