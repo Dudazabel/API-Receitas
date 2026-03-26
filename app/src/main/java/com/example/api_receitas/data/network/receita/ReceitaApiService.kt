@@ -23,6 +23,9 @@ interface ReceitaApiService {
         @Query("tempoMax") max: Double
     ): Response<List<ReceitaResposta>>
 
+    @GET("receita/porcao/{porcao}")
+    suspend fun FiltrarPorPorcao()
+
 
 
     object RetrofitClient {
