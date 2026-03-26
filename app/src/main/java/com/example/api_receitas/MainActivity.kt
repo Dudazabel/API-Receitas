@@ -16,6 +16,7 @@ import com.example.api_receitas.features.authentication.ui.AuthenticationLogIn
 import com.example.api_receitas.features.authentication.ui.AuthenticationSignIn
 import com.example.api_receitas.features.confirmation.ui.telaConfimacao
 import com.example.api_receitas.features.details.ui.RecipeDetailScreen
+import com.example.api_receitas.features.home.ui.HomeScreen
 import com.example.api_receitas.ui.theme.APIReceitasTheme
 
 class MainActivity : ComponentActivity() {
@@ -27,7 +28,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    telaConfimacao()
+
+                   HomeScreen()
+
                 }
             }
         }
