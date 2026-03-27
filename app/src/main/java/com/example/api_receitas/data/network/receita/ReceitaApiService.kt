@@ -1,11 +1,14 @@
 package com.example.api_receitas.data.network.receita
 
-import com.example.api_receitas.data.model.receita.ReceitaResposta
+import com.example.api_receitas.data.model.receita.requisicao.ReceitaRequisicao
+import com.example.api_receitas.data.model.receita.resposta.ReceitaResposta
 import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
@@ -27,7 +30,8 @@ interface ReceitaApiService {
         @Query("min") min: Double,
         @Query("max") max: Double):Response<List<ReceitaResposta>>
 
-
+    @POST("/receita")
+    suspend fun AdicionarReceita(@Body receita: ReceitaRequisicao):Response<ReceitaResposta>
 
     object RetrofitClient {
             private const val BASE_URL = "https://api-receitas-pb3e.onrender.com/"
