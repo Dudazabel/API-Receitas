@@ -5,8 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.api_receitas.data.model.receita.ReceitaResposta
+import com.example.api_receitas.data.model.receita.requisicao.IngredienteRequisicao
+import com.example.api_receitas.data.model.receita.requisicao.PassoRequisicao
+import com.example.api_receitas.data.model.receita.requisicao.ReceitaRequisicao
+import com.example.api_receitas.data.model.receita.resposta.ReceitaResposta
 import com.example.api_receitas.data.network.receita.ReceitaApiService
+import com.example.api_receitas.data.network.usuario.UsuarioApiService
 import kotlinx.coroutines.launch
 
 class ReceitaViewModel: ViewModel() {
@@ -88,6 +92,39 @@ class ReceitaViewModel: ViewModel() {
                 EstaLogado = false
             }
         }
+    }
+    fun CriarNovaReceita(nome: String,
+                         descricao: String,
+                         tempoPreparo: Double,
+                         porcoes: Double,
+                         ingredientes: List<IngredienteRequisicao>,
+                         passos: List<PassoRequisicao>,
+                         onSuccess: () -> Unit){
+        viewModelScope.launch {
+            try {
+            val novaReceita = ReceitaRequisicao(
+                nome = nome,
+                descricao = descricao,
+                tempoPreparo = tempoPreparo,
+                porcoes = porcoes,
+                ingredientes = ingredientes,
+                passos = passos
+            )
+            val resposta = ReceitaApiService.RetrofitClient.apiService.AdicionarReceita(novaReceita)
+                if (resposta.isSuccessful) {
+                    onSuccess()
+                } else {
+                    val erroDaApi = resposta.errorBody()?.string() ?: "Erro desconhecido"
+                    mensagemFeedback = "Erro ${resposta.code()}: $erroDaApi"
+                }
+            }catch (e: Exception){
+                e.message
+            }
+
+
+
+        }
+
     }
 
 
