@@ -184,7 +184,7 @@ fun Header(nome: String = "Usuário"){
             text = buildAnnotatedString {
                 append("Olá $nome, ")
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
-                    append("Boa Tarde!")
+                    append("Boa Noite!")
                 }
             },
             fontSize = 18.sp,
