@@ -384,6 +384,8 @@ fun RecipeFilter(viewModel: ReceitaViewModel){
                     onClick = {
                         viewModel.filtroAtual = "1-3 porções"
                         menuExpandido = false
+                        viewModel.filtrarPorPorcoes(1.0,3.0)
+
                     }
                 )
                 DropdownMenuItem(
@@ -391,6 +393,8 @@ fun RecipeFilter(viewModel: ReceitaViewModel){
                     onClick = {
                         viewModel.filtroAtual = "4-10 porções"
                         menuExpandido = false
+                        viewModel.filtrarPorPorcoes(4.0,10.0)
+
                     }
                 )
                 DropdownMenuItem(
@@ -398,6 +402,8 @@ fun RecipeFilter(viewModel: ReceitaViewModel){
                     onClick = {
                         viewModel.filtroAtual = "10-15 porções"
                         menuExpandido = false
+                        viewModel.filtrarPorPorcoes(10.0,15.0)
+
                     }
                 )
                 DropdownMenuItem(
@@ -405,6 +411,7 @@ fun RecipeFilter(viewModel: ReceitaViewModel){
                     onClick = {
                         viewModel.filtroAtual = "+15 porções"
                         menuExpandido = false
+                        viewModel.filtrarPorPorcoes(15.0,990.0)
                     }
                 )
 

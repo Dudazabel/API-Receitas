@@ -23,13 +23,15 @@ interface ReceitaApiService {
         @Query("tempoMax") max: Double
     ): Response<List<ReceitaResposta>>
 
-    @GET("receita/porcao/{porcao}")
-    suspend fun FiltrarPorPorcao()
+    @GET("receita/porcao/filtro")
+    suspend fun FiltrarPorPorcao(
+        @Query("min") min: Double,
+        @Query("max") max: Double):Response<List<ReceitaResposta>>
 
 
 
     object RetrofitClient {
-        private const val BASE_URL = "https://api-receitas-pb3e.onrender.com/"
+            private const val BASE_URL = "https://api-receitas-pb3e.onrender.com/"
 
 
         private val okHttpClient = OkHttpClient.Builder()

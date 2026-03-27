@@ -74,6 +74,23 @@ class ReceitaViewModel: ViewModel() {
             }
         }
     }
+    fun filtrarPorPorcoes(min:Double, max:Double){
+        viewModelScope.launch {
+            EstaLogado = true
+            try {
+                val resposta = ReceitaApiService.RetrofitClient.apiService.FiltrarPorPorcao(min, max)
+                if(resposta.isSuccessful){
+                    listaReceitas = resposta.body() ?: emptyList()
+                }else{
+                    mensagemFeedback = "Nao foi encontrada nenhuma receita com esse filtro ${resposta.code()}"
+                }
+            }catch (e:Exception){
+                mensagemFeedback = "Nao foi possivel se conectar a api ${e.message}"
+            }finally {
+                EstaLogado = false
+            }
+        }
+    }
 
 
 }
