@@ -10,7 +10,6 @@ import com.example.api_receitas.data.model.receita.requisicao.PassoRequisicao
 import com.example.api_receitas.data.model.receita.requisicao.ReceitaRequisicao
 import com.example.api_receitas.data.model.receita.resposta.ReceitaResposta
 import com.example.api_receitas.data.network.receita.ReceitaApiService
-import com.example.api_receitas.data.network.usuario.UsuarioApiService
 import kotlinx.coroutines.launch
 
 class ReceitaViewModel: ViewModel() {
@@ -63,7 +62,7 @@ class ReceitaViewModel: ViewModel() {
 
     fun filtrarReceitasPorTempo(min:Double, max:Double){
         viewModelScope.launch {
-            EstaLogado = true
+            carregando = true
             try {
                 val resposta = ReceitaApiService.RetrofitClient.apiService.filtrarReceitasPorTempo(min, max)
                 if(resposta.isSuccessful){
@@ -74,13 +73,13 @@ class ReceitaViewModel: ViewModel() {
             }catch (e:Exception){
                 mensagemFeedback = "Nao foi possivel se conectar a api ${e.message}"
             }finally {
-                EstaLogado = false
+                carregando = false
             }
         }
     }
     fun filtrarPorPorcoes(min:Double, max:Double){
         viewModelScope.launch {
-            EstaLogado = true
+            carregando = true
             try {
                 val resposta = ReceitaApiService.RetrofitClient.apiService.FiltrarPorPorcao(min, max)
                 if(resposta.isSuccessful){
@@ -91,7 +90,7 @@ class ReceitaViewModel: ViewModel() {
             }catch (e:Exception){
                 mensagemFeedback = "Nao foi possivel se conectar a api ${e.message}"
             }finally {
-                EstaLogado = false
+                carregando = false
             }
         }
     }
@@ -129,7 +128,7 @@ class ReceitaViewModel: ViewModel() {
 
     }
 
-    fun atualizarReceita(id: Long, receitaAtualizada: ReceitaResposta, onSuccess: () -> Unit) {
+    fun atualizarReceita(id: Long, receitaAtualizada: ReceitaRequisicao, onSuccess: () -> Unit) {
         viewModelScope.launch {
             carregando = true
             try {

@@ -70,7 +70,7 @@ fun CreateRecipe(
     val passos = remember { mutableStateListOf<Passos>() }
 
     LazyColumn(
-        modifier = modifier
+        modifier = Modifier
             .padding(40.dp)
             .fillMaxWidth()
     ) {

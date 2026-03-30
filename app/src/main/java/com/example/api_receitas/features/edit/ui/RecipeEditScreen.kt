@@ -50,9 +50,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.api_receitas.R
-import com.example.api_receitas.data.model.receita.IngredienteResposta
-import com.example.api_receitas.data.model.receita.PassoResposta
-import com.example.api_receitas.data.model.receita.ReceitaResposta
+import com.example.api_receitas.data.model.receita.requisicao.IngredienteRequisicao
+import com.example.api_receitas.data.model.receita.requisicao.PassoRequisicao
+import com.example.api_receitas.data.model.receita.requisicao.ReceitaRequisicao
+import com.example.api_receitas.data.model.receita.resposta.IngredienteResposta
+import com.example.api_receitas.data.model.receita.resposta.PassoResposta
 import com.example.api_receitas.features.details.viewmodel.ReceitaViewModel
 import com.example.api_receitas.ui.theme.Laranja
 
@@ -113,21 +115,36 @@ fun RecipeEditScreen(
                     TopImage(
                         onBackClick = onBackClick,
                         onSaveClick = {
-                            viewModel.receita?.let { receitaAtual ->
-                                val receitaAtualizada = ReceitaResposta(
-                                    id = recipeId,
-                                    nome = titulo,
-                                    descricao = descricao,
-                                    tempoPreparo = tempo.toDoubleOrNull() ?: 0.0,
-                                    porcoes = porcoes.toDoubleOrNull() ?: 0.0,
-                                    ingredientes = listaIngredientes.toList(),
-                                    passos = listaPassos.toList().mapIndexed { index, passo ->
-                                        passo.copy(ordem = index + 1)
-                                    }
-                                )
-                                viewModel.atualizarReceita(recipeId, receitaAtualizada) {
-                                    onSaveSuccess()
+                            val tempoFinal = tempo.toDoubleOrNull() ?.takeIf { it > 0 } ?: 1.0
+                            val porcoesFinal = porcoes.toDoubleOrNull() ?.takeIf { it > 0 } ?: 1.0
+
+                            val ingredientesRequest = listaIngredientes
+                                .filter { it.nome.isNotBlank() }
+                                .map { ingrediente ->
+                                    IngredienteRequisicao(
+                                        nome = ingrediente.nome,
+                                        quantidade = ingrediente.quantidade.ifBlank { "A gosto" }
+                                    )
                                 }
+                            val passosRequest = listaPassos
+                                .filter { it.descricao.isNotBlank() }
+                                .mapIndexed { index, passo ->
+                                    PassoRequisicao(
+                                        descricao = passo.descricao,
+                                        ordem = index + 1
+                                    )
+                                }
+                            val receitaAtualizada = ReceitaRequisicao(
+                                nome = titulo.ifBlank { "Receita Sem Nome" },
+                                descricao = descricao.ifBlank { "Sem Descrição" },
+                                tempoPreparo = tempoFinal,
+                                porcoes = porcoesFinal,
+                                ingredientes = ingredientesRequest,
+                                passos = passosRequest
+                            )
+
+                            viewModel.atualizarReceita(recipeId, receitaAtualizada) {
+                                onSaveSuccess()
                             }
                         },
                         onDeleteClick = {
@@ -241,11 +258,11 @@ fun EditInfoSection(
             value = tempo,
             onValueChange = onTempoChange,
             textStyle = TextStyle(fontWeight = FontWeight.Bold),
-            modifier = Modifier.width(40.dp)
+            modifier = Modifier.width(50.dp)
         )
         Text("m", fontWeight = FontWeight.Bold)
         
-        Spacer(modifier = Modifier.width(50.dp))
+        Spacer(modifier = Modifier.width(30.dp))
         
         Icon(
             painter = painterResource(id = R.drawable.dish),
@@ -257,7 +274,7 @@ fun EditInfoSection(
             value = porcoes, 
             onValueChange = onPorcoesChange, 
             textStyle = TextStyle(fontWeight = FontWeight.Bold),
-            modifier = Modifier.width(30.dp)
+            modifier = Modifier.width(50.dp)
         )
     }
     Spacer(modifier = Modifier.height(24.dp))

@@ -39,20 +39,20 @@ class AuthViewModel: ViewModel() {
             estaLogado = true
             mensagemFeedback = ""
             try {
-                UsuarioApiService.RetrofitClient.apiService.buscarUsuarioPorEmail(email)
+                val usuarioRetornado = UsuarioApiService.RetrofitClient.apiService.buscarUsuarioPorEmail(email)
+
+                nomeUsuarioLogado = usuarioRetornado.nome
 
                 mensagemFeedback = "Login realizado com sucesso!"
                 onSuccess()
             } catch (e: Exception) {
+                e.printStackTrace()
                 mensagemFeedback = "Usuário não encontrado"
             } finally {
                 estaLogado = false
             }
         }
     }
-
-
-
 }
 
 

@@ -107,7 +107,7 @@ fun HomeScreen(
                 Conteudo(
                     receitas = viewModel.listaReceitas, 
                     viewModel = viewModel,
-                    onRecipeClick = onRecipeClick
+                    onRecipeClick = onRecipeClick,
                     listState = listState,
                     focusRequester = focusRequester
                 )
@@ -115,8 +115,6 @@ fun HomeScreen(
         }
     }
 }
-
-
 
 @Composable
 fun Conteudo(
