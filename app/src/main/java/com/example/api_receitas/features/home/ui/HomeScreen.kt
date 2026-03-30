@@ -14,14 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -38,10 +41,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -55,6 +61,7 @@ import com.example.api_receitas.data.model.receita.resposta.ReceitaResposta
 import com.example.api_receitas.features.details.viewmodel.ReceitaViewModel
 import com.example.api_receitas.ui.theme.AzulClaro
 import com.example.api_receitas.ui.theme.Laranja
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -66,16 +73,33 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.buscarTodasAsReceitas()
     }
+
+    val listState = rememberLazyListState()
+    val focusRequester = remember {
+        FocusRequester()
+    }
+    val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
         topBar = { Header(nome = nomeUsuario) },
-        bottomBar = { BottomNavBar(onAddClick = onAddRecipeClick) }
+        bottomBar = {
+            BottomNavBar(
+                onAddClick = onAddRecipeClick,
+                onSearchClick = {
+                    coroutineScope.launch {
+                        listState.animateScrollToItem(1)
+                        focusRequester.requestFocus()
+                    }
+                }
+            )
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            if(viewModel.EstaLogado && viewModel.listaReceitas.isEmpty()) {
+            if(viewModel.carregando && viewModel.listaReceitas.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
@@ -84,6 +108,8 @@ fun HomeScreen(
                     receitas = viewModel.listaReceitas, 
                     viewModel = viewModel,
                     onRecipeClick = onRecipeClick
+                    listState = listState,
+                    focusRequester = focusRequester
                 )
             }
         }
@@ -96,16 +122,19 @@ fun HomeScreen(
 fun Conteudo(
     receitas: List<ReceitaResposta>,
     viewModel: ReceitaViewModel,
-    onRecipeClick: (Long) -> Unit
+    onRecipeClick: (Long) -> Unit,
+    listState: LazyListState,
+    focusRequester: FocusRequester
 ){
     LazyColumn(
+        state = listState,
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         item { Spacer(modifier = Modifier.height(16.dp)) }
-        item{ SearchSection() }
+        item{ SearchSection(focusRequester = focusRequester) }
         item{ CategoriesSection() }
         item{ RecipeFilter(viewModel = viewModel) }
 
@@ -121,7 +150,8 @@ fun Conteudo(
 
 @Composable
 fun BottomNavBar(
-    onAddClick: () -> Unit
+    onAddClick: () -> Unit,
+    onSearchClick: () -> Unit
 ){
     Surface(
         modifier = Modifier
@@ -154,17 +184,17 @@ fun BottomNavBar(
                     contentAlignment = Alignment.Center
                 ){
                     Icon(
-                        painter = painterResource(R.drawable.plus),
+                        Icons.Default.Add,
                         contentDescription = "Adicionar receita",
-                        modifier = Modifier.size(26.dp)
+                        modifier = Modifier.size(30.dp)
                     )
                 }
             }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = onSearchClick) {
                 Icon(
                     painter = painterResource(R.drawable.search),
                     contentDescription = "Pesquisar receita",
-                    modifier = Modifier.size(26.dp)
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
@@ -195,7 +225,7 @@ fun Header(nome: String = "Usuário"){
 }
 
 @Composable
-fun SearchSection(){
+fun SearchSection(focusRequester: FocusRequester){
     var searchText by remember { mutableStateOf("")}
 
     TextField(
@@ -203,7 +233,8 @@ fun SearchSection(){
         onValueChange = { searchText = it },
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp)),
+            .clip(RoundedCornerShape(12.dp))
+            .focusRequester(focusRequester),
         placeholder = {
             Text("Busque pratos ou ingredientes",
                 color = Color.Gray)
