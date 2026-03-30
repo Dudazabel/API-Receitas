@@ -15,6 +15,8 @@ interface UsuarioApiService {
 
     @POST("usuario")
     suspend fun adicionarUsuario(@Body usuario: UsuarioRequisicao): Response<UsuarioResposta>
+
+
     object RetrofitClient{
         private const val BASE_URL = "https://api-receitas-pb3e.onrender.com/"
 
