@@ -1,5 +1,6 @@
 package com.example.api_receitas.features.home.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -84,6 +85,11 @@ fun HomeScreen(
         topBar = { Header(nome = nomeUsuario) },
         bottomBar = {
             BottomNavBar(
+                onHomeClick = {
+                    coroutineScope.launch {
+                        listState.animateScrollToItem(0)
+                    }
+                },
                 onAddClick = onAddRecipeClick,
                 onSearchClick = {
                     coroutineScope.launch {
@@ -148,6 +154,7 @@ fun Conteudo(
 
 @Composable
 fun BottomNavBar(
+    onHomeClick: () -> Unit,
     onAddClick: () -> Unit,
     onSearchClick: () -> Unit
 ){
@@ -166,7 +173,7 @@ fun BottomNavBar(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = onHomeClick) {
                 Icon(
                     painter = painterResource(R.drawable.book),
                     contentDescription = "Tela incial",
@@ -205,8 +212,9 @@ fun Header(nome: String = "Usuário"){
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 18.dp)
-            .padding(top = 30.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(top = 30.dp, bottom = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = buildAnnotatedString {
@@ -217,6 +225,11 @@ fun Header(nome: String = "Usuário"){
             },
             fontSize = 18.sp,
             color = Color.Black
+        )
+        Image(
+            painter = painterResource(R.drawable.logo),
+            contentDescription = "Logo",
+            modifier = Modifier.height(50.dp)
         )
     }
 

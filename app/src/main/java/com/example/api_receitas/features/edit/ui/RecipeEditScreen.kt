@@ -115,36 +115,47 @@ fun RecipeEditScreen(
                     TopImage(
                         onBackClick = onBackClick,
                         onSaveClick = {
-                            val tempoFinal = tempo.toDoubleOrNull() ?.takeIf { it > 0 } ?: 1.0
-                            val porcoesFinal = porcoes.toDoubleOrNull() ?.takeIf { it > 0 } ?: 1.0
+                            val quantidadeInvalida = listaIngredientes.any{ ingrediente ->
+                                val valorNumerico = ingrediente.quantidade
+                                    .takeWhile { it.isDigit() || it == '.' || it == ',' || it == '-' }
+                                    .replace(',', '.')
+                                    .toDoubleOrNull()
+                                valorNumerico != null && valorNumerico <= 0
+                            }
+                            if(quantidadeInvalida){
+                                Toast.makeText(context, "A quantidade dos ingredientes deve ser maior que zero!", Toast.LENGTH_SHORT).show()
+                            } else {
+                                val tempoFinal = tempo.toDoubleOrNull() ?.takeIf { it > 0 } ?: 1.0
+                                val porcoesFinal = porcoes.toDoubleOrNull() ?.takeIf { it > 0 } ?: 1.0
 
-                            val ingredientesRequest = listaIngredientes
-                                .filter { it.nome.isNotBlank() }
-                                .map { ingrediente ->
-                                    IngredienteRequisicao(
-                                        nome = ingrediente.nome,
-                                        quantidade = ingrediente.quantidade.ifBlank { "A gosto" }
-                                    )
-                                }
-                            val passosRequest = listaPassos
-                                .filter { it.descricao.isNotBlank() }
-                                .mapIndexed { index, passo ->
-                                    PassoRequisicao(
-                                        descricao = passo.descricao,
-                                        ordem = index + 1
-                                    )
-                                }
-                            val receitaAtualizada = ReceitaRequisicao(
-                                nome = titulo.ifBlank { "Receita Sem Nome" },
-                                descricao = descricao.ifBlank { "Sem Descrição" },
-                                tempoPreparo = tempoFinal,
-                                porcoes = porcoesFinal,
-                                ingredientes = ingredientesRequest,
-                                passos = passosRequest
-                            )
+                                val ingredientesRequest = listaIngredientes
+                                    .filter { it.nome.isNotBlank() }
+                                    .map { ingrediente ->
+                                        IngredienteRequisicao(
+                                            nome = ingrediente.nome,
+                                            quantidade = ingrediente.quantidade.ifBlank { "A gosto" }
+                                        )
+                                    }
+                                val passosRequest = listaPassos
+                                    .filter { it.descricao.isNotBlank() }
+                                    .mapIndexed { index, passo ->
+                                        PassoRequisicao(
+                                            descricao = passo.descricao,
+                                            ordem = index + 1
+                                        )
+                                    }
+                                val receitaAtualizada = ReceitaRequisicao(
+                                    nome = titulo.ifBlank { "Receita Sem Nome" },
+                                    descricao = descricao.ifBlank { "Sem Descrição" },
+                                    tempoPreparo = tempoFinal,
+                                    porcoes = porcoesFinal,
+                                    ingredientes = ingredientesRequest,
+                                    passos = passosRequest
+                                )
 
-                            viewModel.atualizarReceita(recipeId, receitaAtualizada) {
-                                onSaveSuccess()
+                                viewModel.atualizarReceita(recipeId, receitaAtualizada) {
+                                    onSaveSuccess()
+                                }
                             }
                         },
                         onDeleteClick = {
@@ -306,12 +317,26 @@ fun EditIngredientSection(ingredientes: MutableList<IngredienteResposta>){
             ) {
                 Text(text = "• ", fontSize = 18.sp)
                 TransparentTextField(
+                    value = ingrediente.quantidade,
+                    onValueChange = { novaQuantidade ->
+                        ingredientes[index] = ingredientes[index].copy(quantidade = novaQuantidade)
+                    },
+                    textStyle = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.weight(0.35f),
+                    singleLine = false
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+
+                TransparentTextField(
                     value = ingrediente.nome, 
                     onValueChange = { novoTexto -> 
                         ingredientes[index] = ingredientes[index].copy(nome = novoTexto) 
                     }, 
                     textStyle = TextStyle(fontSize = 16.sp),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(0.7f)
                 )
                 IconButton(
                     onClick = { ingredientes.removeAt(index) },
