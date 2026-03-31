@@ -139,6 +139,7 @@ class ReceitaViewModel: ViewModel() {
                          porcoes: Double,
                          ingredientes: List<IngredienteRequisicao>,
                          passos: List<PassoRequisicao>,
+                         foto: String?,
                          onSuccess: () -> Unit){
         viewModelScope.launch {
             try {
@@ -148,7 +149,8 @@ class ReceitaViewModel: ViewModel() {
                 tempoPreparo = tempoPreparo,
                 porcoes = porcoes,
                 ingredientes = ingredientes,
-                passos = passos
+                passos = passos,
+                foto = foto
             )
             val resposta = ReceitaApiService.RetrofitClient.apiService.AdicionarReceita(novaReceita)
                 if (resposta.isSuccessful) {
@@ -158,7 +160,7 @@ class ReceitaViewModel: ViewModel() {
                     mensagemFeedback = "Erro ${resposta.code()}: $erroDaApi"
                 }
             }catch (e: Exception){
-                e.message
+                mensagemFeedback = "Erro ao criar receita: ${e.message}"
             }
 
 
@@ -180,10 +182,16 @@ class ReceitaViewModel: ViewModel() {
         viewModelScope.launch {
             carregando = true
             try {
+                android.util.Log.d("UPDATE_FOTO", "Foto sendo enviada: ${
+                    if (receitaAtualizada.foto != null) "SIM (${receitaAtualizada.foto.take(50)}...)" else "NÃO (null)"
+                }")
+
                 val resposta = ReceitaApiService.RetrofitClient.apiService.AtualizarReceita(id, receitaAtualizada)
                 if (resposta.isSuccessful) {
                     onSuccess()
                 } else {
+                    val erroDetalhado = resposta.errorBody()?.string() ?: "Erro desconhecido"
+                    android.util.Log.e("API_ERROR", "Erro ${resposta.code()}: $erroDetalhado")
                     mensagemFeedback = "Erro ao atualizar receita: ${resposta.code()}"
                 }
             } catch (e: Exception) {
